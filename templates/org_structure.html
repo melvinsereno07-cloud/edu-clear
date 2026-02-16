@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Organizational Structure</h1>
+{% if session.get('role') == 'Admin' %}
+<form method="post" enctype="multipart/form-data" class="form-grid">
+  <input name="full_name" placeholder="Officer Name" required>
+  <input name="position" placeholder="Position" required>
+  <input type="file" name="image" accept="image/*">
+  <button>Add Officer Card</button>
+</form>
+{% endif %}
+<div class="grid cards">
+  {% for card in cards %}
+    <article>
+      {% if card['image_path'] %}<img src="{{ url_for('uploads', filename=card['image_path']) }}" alt="{{ card['full_name'] }}" style="max-width:120px">{% endif %}
+      <h3>{{ card['full_name'] }}</h3>
+      <p>{{ card['position'] }}</p>
+    </article>
+  {% endfor %}
+</div>
+{% endblock %}

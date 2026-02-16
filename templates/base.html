@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEE Organization Management System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  {% if session.get('user_id') %}
+  <aside class="sidebar">
+    <h2>SEE OMS</h2>
+    <p>{{ session.get('full_name') }}<br><small>{{ session.get('role') }}</small></p>
+    <nav>
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      {% if session.get('role') == 'Admin' %}<a href="{{ url_for('users') }}">Account Management</a>{% endif %}
+      <a href="{{ url_for('financial') }}">Financial Obligations</a>
+      <a href="{{ url_for('attendance') }}">Attendance</a>
+      <a href="{{ url_for('announcements') }}">Announcements</a>
+      <a href="{{ url_for('org_structure') }}">Org Structure</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+  </aside>
+  {% endif %}
+  <main class="content {% if not session.get('user_id') %}auth{% endif %}">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Account Management</h1>
+<div class="grid two">
+  <section>
+    <h2>Create User</h2>
+    <form method="post" class="form-grid">
+      <input name="full_name" placeholder="Full Name" required>
+      <input name="position" placeholder="Position">
+      <input name="username" placeholder="Username" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <select name="role"><option>Student</option><option>Manager</option><option>Admin</option></select>
+      <input name="grade" placeholder="Grade">
+      <input name="section" placeholder="Section">
+      <select name="status"><option>Active</option><option>Inactive</option></select>
+      <button>Create</button>
+    </form>
+  </section>
+  <section>
+    <h2>Bulk Upload</h2>
+    <a class="btn" href="{{ url_for('user_template') }}">Download Excel Template</a>
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('bulk_upload_users') }}">
+      <input type="file" name="excel_file" accept=".xlsx" required>
+      <progress id="progress" value="0" max="100"></progress>
+      <button onclick="let p=document.getElementById('progress');let v=0;let t=setInterval(()=>{v=Math.min(95,v+5);p.value=v;if(v===95)clearInterval(t)},120)">Upload</button>
+    </form>
+  </section>
+</div>
+<table>
+  <tr><th>Name</th><th>Role</th><th>Username</th><th>Status</th><th></th></tr>
+  {% for u in users %}
+  <tr>
+    <td>{{ u['full_name'] }}</td><td>{{ u['role'] }}</td><td>{{ u['username'] }}</td><td>{{ u['status'] }}</td>
+    <td>{% if u['username'] != 'melvin.sereno.admin' %}<form method="post" action="{{ url_for('delete_user', user_id=u['id']) }}"><button class="danger">Delete</button></form>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

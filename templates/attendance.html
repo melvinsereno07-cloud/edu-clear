@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Attendance Module</h1>
+{% if role in ['Admin','Manager'] %}
+<section>
+  <h2>Create Attendance Event</h2>
+  <form method="post" class="inline">
+    <input name="title" placeholder="Event title" required>
+    <input name="event_date" type="date" required>
+    <button>Create Event</button>
+  </form>
+</section>
+<section>
+  <h2>QR / Manual Attendance</h2>
+  <form method="post" action="{{ url_for('record_attendance') }}" class="form-grid">
+    <select name="event_id" required>{% for e in events %}<option value="{{ e['id'] }}">{{ e['title'] }} ({{ e['event_date'] }})</option>{% endfor %}</select>
+    <input name="qr_token" placeholder="Scan/Paste QR token for auto-record">
+    <p>or</p>
+    <input name="student_id" placeholder="Manual student ID">
+    <select name="status"><option>Present</option><option>Late</option><option>Absent</option></select>
+    <button>Record Attendance</button>
+  </form>
+  <a class="btn" href="{{ url_for('attendance_report') }}">Download Excel Attendance Report</a>
+</section>
+{% else %}
+<section>
+  <h2>Your Personal Attendance QR</h2>
+  <img src="{{ qr_url(my_qr) }}" alt="Student QR Code">
+  <p><code>{{ my_qr }}</code></p>
+</section>
+{% endif %}
+
+<table>
+  <tr><th>Student/Event</th><th>Method</th><th>Status</th><th>Timestamp</th></tr>
+  {% if role == 'Student' %}
+    {% for l in my_logs %}<tr><td>{{ l['event_title'] }}</td><td>{{ l['method'] }}</td><td>{{ l['status'] }}</td><td>{{ l['timestamp'] }}</td></tr>{% endfor %}
+  {% else %}
+    {% for l in logs %}<tr><td>{{ l['full_name'] }} - {{ l['event_title'] }}</td><td>{{ l['method'] }}</td><td>{{ l['status'] }}</td><td>{{ l['timestamp'] }}</td></tr>{% endfor %}
+  {% endif %}
+</table>
+{% endblock %}
