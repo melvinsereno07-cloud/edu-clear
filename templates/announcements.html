@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Announcements</h1>
+{% if session.get('role') == 'Admin' %}
+<section>
+  <form method="post" enctype="multipart/form-data" class="form-grid">
+    <input name="title" placeholder="Title" required>
+    <textarea name="content" placeholder="Announcement content" required></textarea>
+    <input type="file" name="image" accept="image/*">
+    <input type="file" name="document" accept=".pdf,.doc,.docx,.xlsx">
+    <label><input type="checkbox" name="pinned"> Pin important announcement</label>
+    <button>Post</button>
+  </form>
+</section>
+{% endif %}
+<div class="grid">
+{% for a in announcements %}
+<article>
+  <h3>{{ '📌' if a['pinned'] else '' }} {{ a['title'] }}</h3>
+  <p>{{ a['content'] }}</p>
+  {% if a['image_path'] %}<img src="{{ url_for('uploads', filename=a['image_path']) }}" alt="announcement image" style="max-width:200px">{% endif %}
+  {% if a['doc_path'] %}<p><a href="{{ url_for('uploads', filename=a['doc_path']) }}">Attached document</a></p>{% endif %}
+  {% if session.get('role') == 'Admin' %}
+  <form method="post" action="{{ url_for('pin_announcement', ann_id=a['id']) }}"><button>{{ 'Unpin' if a['pinned'] else 'Pin' }}</button></form>
+  {% endif %}
+  <small>{{ a['created_at'] }}</small>
+</article>
+{% endfor %}
+</div>
+{% endblock %}

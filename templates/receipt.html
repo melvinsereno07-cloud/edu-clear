@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Payment Receipt</h1>
+<article>
+  <p><strong>Receipt No:</strong> {{ row['receipt_no'] }}</p>
+  <p><strong>Student:</strong> {{ row['full_name'] }}</p>
+  <p><strong>Fee:</strong> {{ row['title'] }}</p>
+  <p><strong>Amount:</strong> ₱{{ '%.2f'|format(row['amount']) }}</p>
+  <p><strong>Status:</strong> {{ row['status'] }}</p>
+  <p><strong>Date & Time:</strong> {{ row['paid_at'] }}</p>
+</article>
+{% endblock %}

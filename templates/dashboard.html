@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="cover">
+  <div>
+    <h1>SEE Organization Management System</h1>
+    <p>MLVN Student Government Operations Dashboard</p>
+  </div>
+  <div class="logo">MLVN</div>
+</section>
+<section class="grid cards">
+  <article><h3>Financial Obligations Status</h3><p>
+  {% if role == 'Student' %}₱{{ '%.2f'|format(financial['paid']) }} paid{% else %}₱{{ '%.2f'|format(financial['paid']) }} collected{% endif %}</p></article>
+  <article><h3>Attendance Overview</h3><p>{{ attendance }} logs</p></article>
+  <article><h3>Announcements</h3><p>{{ total_ann }} total</p></article>
+  <article><h3>Total Students</h3><p>{{ total_students }}</p></article>
+</section>
+<section>
+  <h2>Recent Announcements</h2>
+  <div class="grid">
+  {% for a in announcements %}
+    <article>
+      <h3>{{ '📌' if a['pinned'] else '' }} {{ a['title'] }}</h3>
+      <p>{{ a['content'] }}</p>
+      <small>{{ a['created_at'] }}</small>
+    </article>
+  {% else %}
+    <p>No announcements yet.</p>
+  {% endfor %}
+  </div>
+</section>
+{% endblock %}
